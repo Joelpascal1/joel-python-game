@@ -1,46 +1,99 @@
-# Joel Python Game Learning Repo
+# 🐍 Snake Game
 
-This repository is set up for learning Python by building small games.
-It is designed for a 9th grader who wants to practice coding with fun projects such as:
 
-- Snake
-- Ping Pong
-- Space Shooter
-- Memory Game
 
-## Project structure
+A simple Snake game built with Python's built-in `turtle` module — no external
 
-- `games/` - beginner-friendly game scripts
-- `main.py` - runs the starter game
-- `pyproject.toml` - Python project metadata
+dependencies required. Great for learning Python and building your own features!
 
-## Getting started
 
-1. Create and activate the virtual environment:
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
-2. Upgrade pip:
-   ```bash
-   python -m pip install --upgrade pip
-   ```
-3. Run the starter game:
-   ```bash
-   python main.py
-   ```
 
-If you close and reopen the terminal later, activate it again with:
+## Requirements
+
+
+
+- Python 3.7+ (the `turtle` module ships with Python, so nothing to install)
+
+
+
+> On macOS, `turtle` uses Tkinter. If you get a `ModuleNotFoundError: No module
+
+> named '_tkinter'`, install Python with Tk support (e.g. `brew install
+
+> python-tk`).
+
+
+
+## How to Play
+
+
+
+Run the game from the project folder:
+
+
+
 ```bash
-source .venv/bin/activate
+
+python3 snake_game.py
+
 ```
 
-## Next steps
 
-- Start by editing the snake game in `games/snake_game.py`
-- Add a new file for each game you build
-- Keep your code simple and test one idea at a time
-- Try these beginner challenges:
-  - make the snake grow faster
-  - add a score bonus for eating food
-  - change the colors and board size
+
+### Controls
+
+
+
+| Key         | Action          |
+
+| ----------- | --------------- |
+
+| Arrow Up    | Move up         |
+
+| Arrow Down  | Move down       |
+
+| Arrow Left  | Move left       |
+
+| Arrow Right | Move right      |
+
+| Q           | Quit the game   |
+
+
+
+### Goal
+
+
+
+Eat the red food to grow longer and score points. Avoid running into the walls
+
+or into your own tail!
+
+
+
+## Ideas to Build Upon (Learn Python!)
+
+
+
+The code lives in [snake_game.py](snake_game.py) and is organized in a
+
+`SnakeGame` class with clear methods. Here are some fun things to try:
+
+
+
+1. **Change the colors and speed** — tweak the constants at the top of the file.
+
+2. **Add sound effects** when eating food (try the `winsound` or `playsound` module).
+
+3. **Add a pause key** that freezes the game.
+
+4. **Save the high score to a file** so it persists between runs.
+
+5. **Add obstacles or walls** the snake must avoid.
+
+6. **Add a "wrap around" mode** where the snake exits one side and appears on the other.
+
+7. **Add multiple food types** worth different points.
+
+
+
+Have fun! 🎮

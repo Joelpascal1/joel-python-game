@@ -27,6 +27,7 @@ import random
 import time
 
 import turtle
+import os
 
 
 
@@ -74,7 +75,7 @@ class SnakeGame:
 
         self.screen.setup(width=WIDTH, height=HEIGHT)
 
-        self.screen.title("Snake Game")
+        self.screen.title("Joel Snake Game")
         try:
             self.screen._root.title("Snake Game")
         except AttributeError:
@@ -90,7 +91,7 @@ class SnakeGame:
 
         self.score = 0
 
-        self.high_score = 0
+        self.high_score = self.load_high_score()
 
         self.delay = START_DELAY
 
@@ -336,7 +337,30 @@ class SnakeGame:
 
         )
 
+    # -- High score persistence ----------------------------------------
+    def _high_score_path(self):
+        """Return the path to the high score file next to this script."""
+        return os.path.join(os.path.dirname(__file__), "high_score.txt")
 
+    def load_high_score(self):
+        """Read high score from disk (returns 0 if missing or invalid)."""
+        try:
+            path = self._high_score_path()
+            if os.path.exists(path):
+                with open(path, "r", encoding="utf-8") as f:
+                    return int(f.read().strip() or 0)
+        except Exception:
+            pass
+        return 0
+
+    def save_high_score(self):
+        """Write the current high score to disk, best-effort."""
+        try:
+            path = self._high_score_path()
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(str(self.high_score))
+        except Exception:
+            pass
 
     def reset(self):
 
@@ -360,11 +384,13 @@ class SnakeGame:
 
 
 
-        # Update the high score, then reset the current score.
+
+        # Update the high score, persist it, then reset the current score.
 
         if self.score > self.high_score:
 
             self.high_score = self.score
+            self.save_high_score()
 
         self.score = 0
 
@@ -437,9 +463,7 @@ class SnakeGame:
 
 
 def main():
-
     game = SnakeGame()
-
     game.run()
 
 
@@ -447,5 +471,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

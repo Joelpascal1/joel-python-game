@@ -97,3 +97,35 @@ The code lives in [snake_game.py](snake_game.py) and is organized in a
 
 
 Have fun! 🎮
+
+
+## Ping Pong Game
+
+
+A simple two-player Ping Pong game built with Python's built-in `turtle` module.
+
+
+### Run
+
+From the project folder run:
+
+```bash
+python3 ping_pong.py
+```
+
+
+### Controls
+
+| Key | Action |
+| ---- | ------ |
+| `w` | Player A paddle up |
+| `s` | Player A paddle down |
+| Arrow Up | Player B paddle up |
+| Arrow Down | Player B paddle down |
+| `q` | Quit the game |
+
+
+### Notes
+
+- Uses the same requirements as the Snake game (Python 3.7+ and `turtle`).
+- Scores are displayed at the top of the window and update live.

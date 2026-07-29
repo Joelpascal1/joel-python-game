@@ -37,6 +37,10 @@ source .venv/bin/activate
 
 ## Next steps
 
-- Start by editing the starter game in `games/hello_game.py`
+- Start by editing the snake game in `games/snake_game.py`
 - Add a new file for each game you build
 - Keep your code simple and test one idea at a time
+- Try these beginner challenges:
+  - make the snake grow faster
+  - add a score bonus for eating food
+  - change the colors and board size

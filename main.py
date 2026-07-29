@@ -1,4 +1,4 @@
-from games.hello_game import main
+from games.snake_game import main
 
 
 if __name__ == "__main__":

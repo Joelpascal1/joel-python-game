@@ -7,7 +7,7 @@ WIDTH = 900
 HEIGHT = 600
 PADDLE_SPEED = 40
 # Base ball speed (increased for a faster default; multiplied by chosen difficulty)
-BASE_BALL_SPEED = 1.5
+BASE_BALL_SPEED = 1.8
 
 
 def make_paddle(x, y):
@@ -158,6 +158,27 @@ def main():
     ball = make_ball(BASE_BALL_SPEED * speed_mult)
     scoreboard = make_scoreboard()
 
+    # Create a visible "Click to Start" prompt and wait for user click
+    started = {"flag": False}
+    start_pen = turtle.Turtle()
+    start_pen.hideturtle()
+    start_pen.penup()
+    start_pen.color("yellow")
+    start_pen.goto(0, 0)
+    start_pen.write("Click to Start", align="center", font=("Courier", 32, "bold"))
+
+    def _on_start(x, y):
+        started["flag"] = True
+        start_pen.clear()
+        # unregister click handler so further clicks don't restart
+        screen.onclick(None)
+
+    screen.onclick(_on_start)
+    # Wait until user clicks to start
+    while not started["flag"]:
+        screen.update()
+        time.sleep(0.05)
+
     # Countdown before start so players can get ready
     pre_game_countdown(screen, seconds=3)
 
@@ -169,14 +190,24 @@ def main():
     score_a = 0
     score_b = 0
 
+    # Allow quitting at any time using 'q'
+    running = {"flag": True}
+
+    def quit_game():
+        running["flag"] = False
+        try:
+            screen.bye()
+        except Exception:
+            pass
+
     screen.listen()
     screen.onkeypress(paddle_a_up, "w")
     screen.onkeypress(paddle_a_down, "s")
     screen.onkeypress(paddle_b_up, "Up")
     screen.onkeypress(paddle_b_down, "Down")
-    screen.onkeypress(screen.bye, "q")
+    screen.onkeypress(quit_game, "q")
 
-    while True:
+    while running["flag"]:
         screen.update()
 
         ball.setx(ball.xcor() + ball.dx)
@@ -195,8 +226,6 @@ def main():
         if ball.xcor() > WIDTH // 2 - 10:
             score_a += 1
             update_scoreboard(scoreboard, score_a, score_b)
-            ball.goto(0, 0)
-            ball.dx *= -1
             if score_a >= score_limit:
                 winner_pen = turtle.Turtle()
                 winner_pen.hideturtle()
@@ -206,14 +235,23 @@ def main():
                 winner_pen.write("Player A wins!", align="center", font=("Courier", 36, "bold"))
                 screen.update()
                 time.sleep(3)
-                screen.bye()
+                try:
+                    screen.bye()
+                except Exception:
+                    pass
                 return
+            # Reset ball and countdown before resuming
+            ball.goto(0, 0)
+            ball.dx = 0
+            ball.dy = 0
+            pre_game_countdown(screen, seconds=3)
+            base = getattr(ball, "_base_speed", BASE_BALL_SPEED * speed_mult)
+            ball.dx = base * random.choice([-1, 1])
+            ball.dy = base * random.choice([-1, 1])
 
         if ball.xcor() < -WIDTH // 2 + 10:
             score_b += 1
             update_scoreboard(scoreboard, score_a, score_b)
-            ball.goto(0, 0)
-            ball.dx *= -1
             if score_b >= score_limit:
                 winner_pen = turtle.Turtle()
                 winner_pen.hideturtle()
@@ -223,8 +261,19 @@ def main():
                 winner_pen.write("Player B wins!", align="center", font=("Courier", 36, "bold"))
                 screen.update()
                 time.sleep(3)
-                screen.bye()
+                try:
+                    screen.bye()
+                except Exception:
+                    pass
                 return
+            # Reset ball and countdown before resuming
+            ball.goto(0, 0)
+            ball.dx = 0
+            ball.dy = 0
+            pre_game_countdown(screen, seconds=3)
+            base = getattr(ball, "_base_speed", BASE_BALL_SPEED * speed_mult)
+            ball.dx = base * random.choice([-1, 1])
+            ball.dy = base * random.choice([-1, 1])
 
         # Paddle collisions
         if (

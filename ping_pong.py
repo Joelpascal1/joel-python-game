@@ -10,11 +10,11 @@ PADDLE_SPEED = 40
 BASE_BALL_SPEED = 1.8
 
 
-def make_paddle(x, y):
+def make_paddle(x, y, color):
     paddle = turtle.Turtle()
     paddle.speed(0)
     paddle.shape("square")
-    paddle.color("white")
+    paddle.color(color)
     paddle.shapesize(stretch_wid=5, stretch_len=1)
     paddle.penup()
     paddle.goto(x, y)
@@ -153,8 +153,8 @@ def main():
     screen.setup(width=WIDTH, height=HEIGHT)
     screen.tracer(0)
 
-    paddle_a = make_paddle(-WIDTH // 2 + 40, 0)
-    paddle_b = make_paddle(WIDTH // 2 - 40, 0)
+    paddle_a = make_paddle(-WIDTH // 2 + 40, 0, "darkblue")
+    paddle_b = make_paddle(WIDTH // 2 - 40, 0, "darkred")
     ball = make_ball(BASE_BALL_SPEED * speed_mult)
     scoreboard = make_scoreboard()
 

@@ -4,9 +4,10 @@ import turtle
 
 WIDTH = 900
 HEIGHT = 600
-PADDLE_SPEED = 60
+PADDLE_SPEED = 55
 PUCK_SPEED = 3.5
 GOAL_LIMIT = 5
+GOAL_OPENING_MARGIN = 150
 
 
 def make_paddle(x, y, color):
@@ -59,37 +60,40 @@ def draw_field():
     line.setheading(90)
     line.forward(HEIGHT)
 
+    goal_top = HEIGHT // 2 - GOAL_OPENING_MARGIN
+    goal_bottom = -HEIGHT // 2 + GOAL_OPENING_MARGIN
+
     left_goal = turtle.Turtle()
     left_goal.hideturtle()
     left_goal.speed(0)
     left_goal.color("blue")
     left_goal.penup()
-    left_goal.goto(-WIDTH // 2, -HEIGHT // 2 + 120)
+    left_goal.goto(-WIDTH // 2, goal_bottom)
     left_goal.pendown()
     left_goal.setheading(0)
     left_goal.forward(20)
     left_goal.setheading(90)
-    left_goal.forward(HEIGHT - 240)
+    left_goal.forward(goal_top - goal_bottom)
     left_goal.setheading(180)
     left_goal.forward(20)
     left_goal.setheading(270)
-    left_goal.forward(HEIGHT - 240)
+    left_goal.forward(goal_top - goal_bottom)
 
     right_goal = turtle.Turtle()
     right_goal.hideturtle()
     right_goal.speed(0)
     right_goal.color("red")
     right_goal.penup()
-    right_goal.goto(WIDTH // 2 - 20, -HEIGHT // 2 + 120)
+    right_goal.goto(WIDTH // 2 - 20, goal_bottom)
     right_goal.pendown()
     right_goal.setheading(0)
     right_goal.forward(20)
     right_goal.setheading(90)
-    right_goal.forward(HEIGHT - 240)
+    right_goal.forward(goal_top - goal_bottom)
     right_goal.setheading(180)
     right_goal.forward(20)
     right_goal.setheading(270)
-    right_goal.forward(HEIGHT - 240)
+    right_goal.forward(goal_top - goal_bottom)
 
 
 def make_scoreboard():
@@ -116,6 +120,26 @@ def reset_puck(puck):
     puck.goto(0, 0)
     puck.dx = random.choice([-1, 1]) * PUCK_SPEED
     puck.dy = random.choice([-1, 1]) * PUCK_SPEED
+
+
+def start_countdown(screen, seconds):
+    pen = turtle.Turtle()
+    pen.hideturtle()
+    pen.penup()
+    pen.color("yellow")
+    pen.goto(0, 0)
+
+    for count in range(seconds, 0, -1):
+        pen.clear()
+        pen.write(str(count), align="center", font=("Courier", 42, "bold"))
+        screen.update()
+        time.sleep(1)
+
+    pen.clear()
+    pen.write("Go!", align="center", font=("Courier", 36, "bold"))
+    screen.update()
+    time.sleep(0.6)
+    pen.clear()
 
 
 def paddle_a_up():
@@ -187,6 +211,8 @@ def main():
         screen.update()
         time.sleep(0.05)
 
+    start_countdown(screen, 5)
+
     reset_puck(puck)
     score_a = 0
     score_b = 0
@@ -213,11 +239,8 @@ def main():
             puck.sety(-HEIGHT // 2 + 10)
             puck.dy *= -1
 
-        paddle_half_w = 20
-        paddle_half_h = 55
-        puck_radius = 18
+        paddle_radius = 18
 
-        # Right paddle collision: any part of the rectangle counts
         if (
             puck.xcor() > paddle_b.xcor() - paddle_radius
             and puck.xcor() < paddle_b.xcor() + paddle_radius
@@ -229,7 +252,6 @@ def main():
             puck.dx *= 1.04
             puck.dy *= 1.02
 
-        # Left paddle collision: any part of the rectangle counts
         if (
             puck.xcor() < paddle_a.xcor() + paddle_radius
             and puck.xcor() > paddle_a.xcor() - paddle_radius
@@ -241,37 +263,50 @@ def main():
             puck.dx *= 1.04
             puck.dy *= 1.02
 
-        if puck.xcor() > WIDTH // 2 + 10:
-            score_a += 1
-            update_scoreboard(scoreboard, score_a, score_b)
-            if score_a >= GOAL_LIMIT:
-                winner = turtle.Turtle()
-                winner.hideturtle()
-                winner.penup()
-                winner.color("blue")
-                winner.goto(0, 0)
-                winner.write("Player A wins!", align="center", font=("Courier", 36, "bold"))
-                screen.update()
-                time.sleep(3)
-                screen.bye()
-                return
-            reset_puck(puck)
+        left_goal_top = HEIGHT // 2 - GOAL_OPENING_MARGIN
+        left_goal_bottom = -HEIGHT // 2 + GOAL_OPENING_MARGIN
 
-        if puck.xcor() < -WIDTH // 2 - 10:
-            score_b += 1
-            update_scoreboard(scoreboard, score_a, score_b)
-            if score_b >= GOAL_LIMIT:
-                winner = turtle.Turtle()
-                winner.hideturtle()
-                winner.penup()
-                winner.color("red")
-                winner.goto(0, 0)
-                winner.write("Player B wins!", align="center", font=("Courier", 36, "bold"))
-                screen.update()
-                time.sleep(3)
-                screen.bye()
-                return
-            reset_puck(puck)
+        if puck.xcor() > WIDTH // 2 - 10:
+            if left_goal_bottom <= puck.ycor() <= left_goal_top:
+                score_a += 1
+                update_scoreboard(scoreboard, score_a, score_b)
+                if score_a >= GOAL_LIMIT:
+                    winner = turtle.Turtle()
+                    winner.hideturtle()
+                    winner.penup()
+                    winner.color("blue")
+                    winner.goto(0, 0)
+                    winner.write("Player A wins!", align="center", font=("Courier", 36, "bold"))
+                    screen.update()
+                    time.sleep(3)
+                    screen.bye()
+                    return
+                start_countdown(screen, 3)
+                reset_puck(puck)
+            else:
+                puck.setx(WIDTH // 2 - 10)
+                puck.dx *= -1
+
+        if puck.xcor() < -WIDTH // 2 + 10:
+            if left_goal_bottom <= puck.ycor() <= left_goal_top:
+                score_b += 1
+                update_scoreboard(scoreboard, score_a, score_b)
+                if score_b >= GOAL_LIMIT:
+                    winner = turtle.Turtle()
+                    winner.hideturtle()
+                    winner.penup()
+                    winner.color("red")
+                    winner.goto(0, 0)
+                    winner.write("Player B wins!", align="center", font=("Courier", 36, "bold"))
+                    screen.update()
+                    time.sleep(3)
+                    screen.bye()
+                    return
+                start_countdown(screen, 3)
+                reset_puck(puck)
+            else:
+                puck.setx(-WIDTH // 2 + 10)
+                puck.dx *= -1
 
         time.sleep(0.01)
 

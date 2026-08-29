@@ -97,6 +97,8 @@ class SnakeGame:
 
         self.running = True
 
+        self.last_speed_up_score = 0
+
 
 
         # --- Create the snake head ---------------------------------------
@@ -425,12 +427,14 @@ class SnakeGame:
             if self.check_food_collision():
 
                 self.place_food()
-
                 self.grow()
 
                 self.score += 10
 
-                self.delay = max(0.05, self.delay - 0.001)  # Speed up slightly
+                # Increase speed every 50 points
+                if self.score > 0 and self.score % 50 == 0 and self.score != self.last_speed_up_score:
+                    self.delay = max(0.05, self.delay * 0.9)
+                    self.last_speed_up_score = self.score
 
                 self.update_scoreboard()
 
